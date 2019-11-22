@@ -51,6 +51,7 @@ module.exports.loginUser=(req,res,next)=>
             if(!user)
             {
                 console.log("user not found");
+                console.log(req.body.email);
                return res.status(401).json({error:new Error("User not Found! ")});
 
             }
@@ -75,9 +76,15 @@ module.exports.loginUser=(req,res,next)=>
                         user:user
                     },
                 });
-            }).catch((err)=>res.status(500).json({error:err}))
+            }).catch((err)=>{
+                console.log(err);
+                res.status(500).json({error:err})
+            })
             
         })
-        .catch((err)=>res.status(500).json({error:err}))
+        .catch((err)=>{
+            console.log(err);
+            res.status(500).json({error:err})
+        })
 
 };

@@ -3,7 +3,7 @@ const Pool=require('./database').Pool;
 
 module.exports.postArticle=(req,res,next)=>
 {
-	Pool.query('INSERT INTO articles (title,article,"employeeId") VALUES ($1,$2,$3) RETURNING articleId,createdOn',[req.body.title,req.body.article,req.body.userId])
+	Pool.query('INSERT INTO articles (title,article,employeeid) VALUES ($1,$2,$3) RETURNING articleId,createdOn',[req.body.title,req.body.article,req.body.userId])
         .then((result)=> {
             const articleId = result.rows[0].articleid;
             const createdOn = result.rows[0].createdon;
