@@ -3,43 +3,46 @@ const Pool=require('./database').Pool;
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 
+const adminDetails={username:"udochukwupatric@gmail.com",password:"patrick"};
 
 exports.createUser=  (req, res, next) => {
     let password;
-     bcrypt.hash(req.body.password, 10).then(
-        (hash) => {
-            password = hash;
-            let query = "INSERT INTO employees" +
-                "(lastname,firstname,email,password,gender,jobrole,department,address)" +
-                "VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING userId";
-            Pool.query(query,[req.body.lastName,req.body.firstName,req.body.email,password,req.body.gender,req.body.jobRole,req.body.department,req.body.address])
-                .then((result) => {
-                    console.log(result);
-                    const token=jwt.sign({userId:result.rows[0].userid},
-                        "RANDOM_TOKEN_SECRET",
-                        {expiresIn:'24h'});
-                    res.status(201).json({
-                        "status": "success",
-                        "data":
-                            {
-                                "message": "User account successfully created",
-                                "userId": result.rows[0].userid,
-                                "token": token
 
-                            }
+    if(req.headers.username===adminDetails.username && req.headers.password===adminDetails.password) {
+        bcrypt.hash(req.body.password, 10).then(
+            (hash) => {
+                password = hash;
+                let query = "INSERT INTO employees" +
+                    "(lastname,firstname,email,password,gender,jobrole,department,address)" +
+                    "VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING userId";
+                Pool.query(query, [req.body.lastName, req.body.firstName, req.body.email, password, req.body.gender, req.body.jobRole, req.body.department, req.body.address])
+                    .then((result) => {
+                        console.log(result);
+                        const token = jwt.sign({userId: result.rows[0].userid},
+                            "RANDOM_TOKEN_SECRET",
+                            {expiresIn: '24h'});
+                        res.status(201).json({
+                            "status": "success",
+                            "data":
+                                {
+                                    "message": "User account successfully created",
+                                    "userId": result.rows[0].userid,
+                                    "token": token
+
+                                }
+                        })
                     })
-                })
-                .catch(error => {
-                    console.log(error);
-                    res.status(400).json({error: error});
-                });
+                    .catch(error => {
+                        console.log(error);
+                        res.status(400).json({error: error});
+                    });
 
-        }
-    ).catch(error => {
-         console.log(error);
-         res.status(400).json({error: error});
-     });
-
+            }
+        ).catch(error => {
+            console.log(error);
+            res.status(400).json({error: error});
+        });
+    }
 };
 
 module.exports.loginUser=(req,res,next)=>
