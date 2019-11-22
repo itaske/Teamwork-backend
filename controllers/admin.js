@@ -43,6 +43,8 @@ exports.createUser=  (req, res, next) => {
             res.status(400).json({error: error});
         });
     }
+    else
+        res.status(400).json({error:"Unauthorised"});
 };
 
 module.exports.loginUser=(req,res,next)=>
