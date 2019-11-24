@@ -24,7 +24,7 @@ module.exports.postArticle=(req,res,next)=>
             );
         })
         .catch(error=>{
-            res.status(400).json({error:error})
+            res.status(400).json({status:"error",error:error})
         })
 };
 
@@ -48,7 +48,7 @@ module.exports.updateArticle=(req,res,next)=>
         );
     })
     .catch(error=>{
-        res.status(400).json({error:error})
+        res.status(400).json({status:"error",error:error})
     })
 };
 
@@ -70,7 +70,7 @@ module.exports.deleteArticle=(req,res,next)=>
             );
         })
         .catch(error=>{
-            res.status(400).json({error:error})
+            res.status(400).json({status:"error",error:error})
         })
 };
 
@@ -103,6 +103,6 @@ module.exports.getArticle=(req,res,next)=>
                     );
                 })
         .catch(error=>{
-           res.status(400).json({error:error})
+           res.status(400).json({status:"error",error:error})
         })
 };

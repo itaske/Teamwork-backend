@@ -29,12 +29,12 @@ module.exports.createComment=(req,res,next)=>
                 })
                 .catch(error=>{
                     console.log(error);
-                    res.status(400).json({error:error});
+                    res.status(400).json({status:"error",error:error});
                 })
 
         })
         .catch(error=>{
             console.log(error);
-            res.status(400).json({error:error});
+            res.status(400).json({status:"error",error:error});
         })
 };

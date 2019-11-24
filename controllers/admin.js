@@ -3,12 +3,16 @@ const Pool=require('./database').Pool;
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 
-const adminDetails={username:"udochukwupatric@gmail.com",password:"patrick"};
+const adminDetails={userId:1,username:"udochukwupatric@gmail.com",password:"patrick"};
 
 exports.createUser=  (req, res, next) => {
     let password;
-   console.log(req.headers.authorization);
-    if(req.headers.email===adminDetails.username && req.headers.password===adminDetails.password) {
+
+    const token=req.headers.authorization.split(' ')[1];
+    const decodedToken=jwt.verify(token,"RANDOM_TOKEN_SECRET");
+    const userId=decodedToken.userId;
+    if(adminDetails.userId ===userId)
+    {
         bcrypt.hash(req.body.password, 10).then(
             (hash) => {
                 password = hash;
@@ -34,17 +38,17 @@ exports.createUser=  (req, res, next) => {
                     })
                     .catch(error => {
                         console.log(error);
-                        res.status(500).json({error: error});
+                        res.status(500).json({status:"error",error: error});
                     });
 
             }
         ).catch(error => {
             console.log(error);
-            res.status(500).json({error: error});
+            res.status(500).json({status:"error",error: error});
         });
     }
     else
-        res.status(401).json({error:"Unauthorised"});
+        res.status(401).json({status:"error",error:"Unauthorised"});
 };
 
 module.exports.loginUser=(req,res,next)=>
@@ -57,7 +61,7 @@ module.exports.loginUser=(req,res,next)=>
             {
                 console.log("user not found");
                 console.log(req.body.email);
-               return res.status(401).json({error:new Error("User not Found! ")});
+               return res.status(401).json({status:"error",error:new Error("User not Found! ")});
 
             }
 
@@ -66,7 +70,7 @@ module.exports.loginUser=(req,res,next)=>
                 if(!valid)
                 {
                     console.log("incorrect password");
-                    return res.status(401).json({error:new Error("Incorrect Password! ")});
+                    return res.status(401).json({status:"error",error:new Error("Incorrect Password! ")});
 
                 }
                 const token=jwt.sign({userId:user.userid},
@@ -83,13 +87,13 @@ module.exports.loginUser=(req,res,next)=>
                 });
             }).catch((err)=>{
                 console.log(err);
-                res.status(500).json({error:err})
+                res.status(500).json({status:"error",error:err})
             })
             
         })
         .catch((err)=>{
             console.log(err);
-            res.status(500).json({error:err})
+            res.status(500).json({status:"error",error:err})
         })
 
 };
