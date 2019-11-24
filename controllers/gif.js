@@ -64,7 +64,7 @@ module.exports.deleteGif=(req,res,next)=>
         [req.params.articleId])
         .then((result)=> {
 
-            res.status(201).json(
+            res.status(200).json(
                 {
                     status: "success",
                     data: {
@@ -93,7 +93,7 @@ module.exports.getGif=(req,res,next)=>
             console.log(queryResult.createdon);
             console.log(queryResult.title);
             console.log(queryResult.gifurl);
-            res.status(201).json(
+            res.status(200).json(
                 {
                     status: "success",
                     data: {

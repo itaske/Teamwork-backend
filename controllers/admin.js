@@ -7,7 +7,7 @@ const adminDetails={username:"udochukwupatric@gmail.com",password:"patrick"};
 
 exports.createUser=  (req, res, next) => {
     let password;
-
+   console.log(req.headers.authorization);
     if(req.headers.username===adminDetails.username && req.headers.password===adminDetails.password) {
         bcrypt.hash(req.body.password, 10).then(
             (hash) => {
@@ -34,29 +34,29 @@ exports.createUser=  (req, res, next) => {
                     })
                     .catch(error => {
                         console.log(error);
-                        res.status(400).json({error: error});
+                        res.status(500).json({error: error});
                     });
 
             }
         ).catch(error => {
             console.log(error);
-            res.status(400).json({error: error});
+            res.status(500).json({error: error});
         });
     }
     else
-        res.status(400).json({error:"Unauthorised"});
+        res.status(401).json({error:"Unauthorised"});
 };
 
 module.exports.loginUser=(req,res,next)=>
 {
-    Pool.query("Select * from employees as e where e.email=$1",[req.body.email])
+    Pool.query("Select * from employees as e where e.email=$1",[req.body.username])
         .then((result)=>{
             let user=result.rows[0];
 
             if(!user)
             {
                 console.log("user not found");
-                console.log(req.body.email);
+                console.log(req.body.username);
                return res.status(401).json({error:new Error("User not Found! ")});
 
             }
